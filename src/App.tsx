@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -13,6 +12,7 @@ import AppLayout from "./components/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import TransactionFormPage from "./pages/TransactionFormPage";
 import PlanningPage from "./pages/PlanningPage";
@@ -22,7 +22,6 @@ import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
-// Fixed App component without TooltipProvider at the root level
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -34,6 +33,7 @@ const App = () => (
             {/* Auth Routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             
             {/* App Routes */}
             <Route element={<AppLayout />}>
