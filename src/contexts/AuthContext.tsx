@@ -24,7 +24,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check local storage for stored user on initial load
     const storedUser = localStorage.getItem(CURRENT_USER_KEY);
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem(CURRENT_USER_KEY);
+      }
     }
     setIsLoading(false);
   }, []);
@@ -40,16 +45,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Buscar usuários do localStorage
       const usersStr = localStorage.getItem(USERS_KEY) || '[]';
-      const users = JSON.parse(usersStr);
+      let users;
       
-      const foundUser = users.find((u: any) => u.email === email);
+      try {
+        users = JSON.parse(usersStr);
+      } catch (error) {
+        console.error('Erro ao processar usuários armazenados:', error);
+        users = [];
+      }
       
-      if (!foundUser || foundUser.password !== password) {
+      // Verificar se os dados são um array
+      if (!Array.isArray(users)) {
+        console.error('Dados de usuários não são um array');
+        users = [];
+      }
+      
+      console.log('Tentando login com:', { email, storedUsers: users });
+      
+      const foundUser = users.find((u: any) => 
+        u.email && u.email.toLowerCase() === email.toLowerCase()
+      );
+      
+      if (!foundUser) {
+        console.log('Usuário não encontrado');
+        throw new Error('E-mail ou senha inválidos');
+      }
+      
+      if (foundUser.password !== password) {
+        console.log('Senha incorreta');
         throw new Error('E-mail ou senha inválidos');
       }
       
       const { password: _, ...userWithoutPassword } = foundUser;
+      console.log('Login bem-sucedido:', userWithoutPassword);
+      
       setUser(userWithoutPassword);
       saveUserToStorage(userWithoutPassword);
       toast.success('Login realizado com sucesso');
@@ -68,14 +99,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Carregar usuários existentes
       const usersStr = localStorage.getItem(USERS_KEY) || '[]';
-      const users = JSON.parse(usersStr);
+      let users;
       
-      const existingUser = users.find((u: any) => u.email === email);
+      try {
+        users = JSON.parse(usersStr);
+      } catch (error) {
+        console.error('Erro ao processar usuários armazenados:', error);
+        users = [];
+      }
+      
+      // Verificar se os dados são um array
+      if (!Array.isArray(users)) {
+        console.error('Dados de usuários não são um array');
+        users = [];
+      }
+      
+      // Verificar se e-mail já existe
+      const existingUser = users.find((u: any) => 
+        u.email && u.email.toLowerCase() === email.toLowerCase()
+      );
+      
       if (existingUser) {
         throw new Error('E-mail já cadastrado');
       }
       
+      // Criar novo usuário
       const newUser = {
         id: Date.now().toString(),
         email,
@@ -83,9 +133,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name
       };
       
+      // Adicionar novo usuário e salvar
       users.push(newUser);
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       
+      console.log('Usuário cadastrado com sucesso:', { email, name });
+      
+      // Login automático após signup
       const { password: _, ...userWithoutPassword } = newUser;
       setUser(userWithoutPassword);
       saveUserToStorage(userWithoutPassword);

@@ -18,6 +18,7 @@ import TransactionFormPage from "./pages/TransactionFormPage";
 import PlanningPage from "./pages/PlanningPage";
 import AccountPage from "./pages/AccountPage";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
