@@ -240,7 +240,7 @@ function getCategoryIcon(iconName: string) {
     case 'piggy-bank':
       return <PiggyBank size={iconSize} />;
     default:
-      return <Calendar size={iconSize} />;
+      return <CalendarIcon size={iconSize} />;
   }
 }
 
@@ -257,15 +257,6 @@ const PiggyBank = ({ size }: { size: number }) => (
     <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2 0-.3-.5-2-3-2Z"/>
     <path d="M2 9v1c0 1.1.9 2 2 2h1"/>
     <path d="M16 11a2 2 0 0 0-4 0"/>
-  </svg>
-);
-
-const Calendar = ({ size }: { size: number }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-    <line x1="16" x2="16" y1="2" y2="6"/>
-    <line x1="8" x2="8" y1="2" y2="6"/>
-    <line x1="3" x2="21" y1="10" y2="10"/>
   </svg>
 );
 
