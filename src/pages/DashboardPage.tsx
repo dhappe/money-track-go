@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -84,9 +83,9 @@ const DashboardPage: React.FC = () => {
 
   const barChartData = period === 'month' ? prepareMonthlyData() : [];
 
-  // Colors for pie chart
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d', '#ffc658', '#8dd1e1'];
-
+  // Colors for charts - using our primary color and its variations
+  const CHART_COLORS = ['#2C8C99', '#3DA9B8', '#4EC6D7', '#5FE3F6', '#70F0FF', '#81FDFF'];
+  
   const financialTips = generateFinancialTips(transactions, incomes, expenses);
 
   return (
@@ -141,17 +140,29 @@ const DashboardPage: React.FC = () => {
                     cy="50%"
                     labelLine={false}
                     outerRadius={80}
-                    fill="#8884d8"
+                    fill="#2C8C99"
                     dataKey="value"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
                     {pieChartData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={CHART_COLORS[index % CHART_COLORS.length]}
+                      />
                     ))}
                   </Pie>
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value: number) => formatCurrency(value)}
-                    itemStyle={{ color: "#1F2937" }}
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      fontFamily: 'Inter',
+                    }}
+                    itemStyle={{
+                      color: "#2C8C99",
+                      fontFamily: 'Inter',
+                    }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -174,15 +185,36 @@ const DashboardPage: React.FC = () => {
               <div className="h-[200px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={barChartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="date" />
-                    <YAxis width={50} tickFormatter={(value) => `R$${value}`} />
-                    <Tooltip 
-                      formatter={(value: number) => formatCurrency(value)}
-                      itemStyle={{ color: "#1F2937" }}
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                    <XAxis 
+                      dataKey="date" 
+                      tick={{ fill: '#64748b', fontFamily: 'Inter' }}
                     />
-                    <Bar dataKey="income" name="Receitas" fill="#10B981" />
+                    <YAxis 
+                      width={50} 
+                      tickFormatter={(value) => `R$${value}`}
+                      tick={{ fill: '#64748b', fontFamily: 'Inter' }}
+                    />
+                    <Tooltip
+                      formatter={(value: number) => formatCurrency(value)}
+                      contentStyle={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        fontFamily: 'Inter',
+                      }}
+                      itemStyle={{
+                        color: "#2C8C99",
+                        fontFamily: 'Inter',
+                      }}
+                    />
+                    <Bar dataKey="income" name="Receitas" fill="#2C8C99" />
                     <Bar dataKey="expense" name="Despesas" fill="#EF4444" />
+                    <Legend 
+                      wrapperStyle={{
+                        fontFamily: 'Inter',
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
